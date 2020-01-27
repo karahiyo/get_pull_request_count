@@ -3,6 +3,7 @@ import configparser
 from collections import Counter, defaultdict
 import csv
 import re
+import statistics
 
 
 config = configparser.ConfigParser()
@@ -43,9 +44,14 @@ print(pr_count_per_contributer)
 
 with open("./out/" + config['DEFAULT']['out_csv'], mode='w') as f:
     writer = csv.writer(f)
-    writer.writerow(["date", "pr_count_avg"])
+    writer.writerow(["date", "pr_count_total", "pr_count_avg", "pr_count_max", "pr_count_median"])
     for created_at, pr_count_by_user in pr_count_per_contributer.items():
-        writer.writerow([created_at, sum(pr_count_by_user.values()) / len(pr_count_by_user.values())])
-
+        writer.writerow([
+            created_at,
+            sum(pr_count_by_user.values()),
+            sum(pr_count_by_user.values()) / len(pr_count_by_user.values()),
+            max(pr_count_by_user.values()),
+            statistics.median(pr_count_by_user.values())
+            ])
 
 print("fin")
